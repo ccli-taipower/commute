@@ -518,9 +518,7 @@ html, body {
 
   <!-- BOTTOM BAR -->
   <div class="bottom-bar">
-    <input class="api-input-mob" type="password" id="apiKey"
-      placeholder="CWA API Key..."
-      inputmode="text" autocomplete="off" autocorrect="off" spellcheck="false" />
+    <input class="api-input-mob" type="hidden" id="apiKey" value="CWA-49B1E2AB-7006-41AC-A428-D9AA6BD3EC6E" />
     <button class="btn-update" id="btnUpdate" onclick="fetchAll()">🔄 更新</button>
   </div>
 
@@ -674,9 +672,9 @@ function setStatus(type, msg) {
 
 // ── MAIN FETCH ──
 async function fetchAll() {
-  const key = document.getElementById('apiKey').value.trim();
+  const key = ("CWA-49B1E2AB-7006-41AC-A428-D9AA6BD3EC6E");
   if (!key) { alert('請輸入氣象署 API Key'); return; }
-  localStorage.setItem('cwa_key', key);
+  
 
   const btn = document.getElementById('btnUpdate');
   btn.disabled = true; btn.textContent = '⏳';
@@ -775,11 +773,8 @@ async function fetchAll() {
 
 // ── INIT ──
 setRoute('ws');
-const saved = localStorage.getItem('cwa_key');
-if (saved) { document.getElementById('apiKey').value = saved; }
-document.getElementById('apiKey').addEventListener('keydown', e => {
-  if (e.key === 'Enter') { document.activeElement.blur(); fetchAll(); }
-});
+// Auto-fetch on load
+window.addEventListener('load', () => setTimeout(fetchAll, 500));
 </script>
 </body>
 </html>
