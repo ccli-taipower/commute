@@ -12,769 +12,617 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Bebas+Neue&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --ink: #0d0d0d;
-  --bg: #f5f0e8;
-  --bg2: #ede8dc;
-  --rule: #d4cdc0;
-  --accent: #c0392b;
-  --blue: #2471a3;
-  --warn: #d68910;
-  --safe: #1e8449;
-  --muted: #7a7060;
-  --mono: 'JetBrains Mono', monospace;
-  --display: 'Bebas Neue', sans-serif;
-  --body: 'Noto Sans TC', sans-serif;
-  --safe-top: env(safe-area-inset-top, 0px);
-  --safe-bot: env(safe-area-inset-bottom, 0px);
+  --ink:#0d0d0d; --bg:#f5f0e8; --bg2:#ede8dc; --rule:#d4cdc0;
+  --accent:#c0392b; --blue:#2471a3; --green:#1e8449; --warn:#d68910;
+  --muted:#7a7060;
+  --mono:'JetBrains Mono',monospace; --display:'Bebas Neue',sans-serif; --body:'Noto Sans TC',sans-serif;
+  --safe-top:env(safe-area-inset-top,0px); --safe-bot:env(safe-area-inset-bottom,0px);
 }
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;background:var(--ink);font-family:var(--body);overscroll-behavior:none;}
+.shell{display:flex;flex-direction:column;height:100dvh;background:var(--bg);max-width:430px;margin:0 auto;overflow:hidden;}
 
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+/* TOPBAR */
+.topbar{background:var(--ink);color:var(--bg);padding:calc(var(--safe-top)+10px) 18px 10px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.topbar-title{font-family:var(--display);font-size:26px;letter-spacing:.06em;line-height:1;}
+.topbar-clock{font-family:var(--display);font-size:30px;line-height:1;text-align:right;}
+.topbar-date{font-family:var(--mono);font-size:9px;color:rgba(245,240,232,.5);letter-spacing:.08em;margin-top:1px;text-align:right;}
 
-html, body {
-  height: 100%;
-  background: var(--ink);
-  font-family: var(--body);
-  overscroll-behavior: none;
-}
+/* SUN BAR */
+.sun-bar{background:var(--ink);padding:0 18px 10px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.sun-item{display:flex;align-items:center;gap:4px;font-family:var(--mono);font-size:11px;color:rgba(245,240,232,.55);flex-shrink:0;}
+.sun-val{color:rgba(245,240,232,.9);font-weight:600;}
+.sun-track{flex:1;height:4px;background:rgba(255,255,255,.12);border-radius:2px;position:relative;}
+.sun-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#f39c12,#e67e22);}
+.sun-dot{position:absolute;top:50%;transform:translate(-50%,-50%);width:9px;height:9px;border-radius:50%;background:#f1c40f;box-shadow:0 0 5px #f1c40f;}
 
-/* ── SHELL ── */
-.shell {
-  display: flex;
-  flex-direction: column;
-  height: 100dvh;
-  background: var(--bg);
-  max-width: 430px;
-  margin: 0 auto;
-  position: relative;
-  overflow: hidden;
-}
+/* ROUTE PILLS */
+.route-pills{display:flex;gap:6px;padding:10px 18px;background:var(--bg2);border-bottom:1px solid var(--rule);overflow-x:auto;flex-shrink:0;}
+.route-pills::-webkit-scrollbar{display:none;}
+.rpill{flex-shrink:0;font-family:var(--mono);font-size:10px;padding:6px 12px;border:1.5px solid var(--rule);border-radius:20px;background:var(--bg);color:var(--muted);cursor:pointer;white-space:nowrap;transition:all .15s;}
+.rpill.active{background:var(--ink);color:var(--bg);border-color:var(--ink);}
 
-/* ── TOP BAR ── */
-.topbar {
-  background: var(--ink);
-  color: var(--bg);
-  padding: calc(var(--safe-top) + 12px) 20px 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 100;
-}
-.topbar-title {
-  font-family: var(--display);
-  font-size: 28px;
-  letter-spacing: .06em;
-  line-height: 1;
-}
-.topbar-right {
-  text-align: right;
-}
-.topbar-clock {
-  font-family: var(--display);
-  font-size: 32px;
-  line-height: 1;
-}
-.topbar-date {
-  font-family: var(--mono);
-  font-size: 9px;
-  color: rgba(245,240,232,.5);
-  letter-spacing: .1em;
-  margin-top: 1px;
-}
+/* SCROLL */
+.scroll-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--safe-bot)+72px);}
+.scroll-area::-webkit-scrollbar{display:none;}
 
-/* ── SCROLL AREA ── */
-.scroll-area {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: calc(var(--safe-bot) + 80px);
-}
-.scroll-area::-webkit-scrollbar { display: none; }
+/* ALERT */
+.alert-banner{margin:10px 18px 0;border-radius:10px;padding:12px 14px;border:1.5px solid;display:flex;align-items:center;gap:10px;}
+.alert-banner.clear{border-color:var(--green);background:rgba(30,132,73,.06);}
+.alert-banner.warn{border-color:var(--warn);background:rgba(214,137,16,.07);}
+.alert-banner.danger{border-color:var(--accent);background:rgba(192,57,43,.07);animation:pulse-a 2s ease-in-out infinite;}
+@keyframes pulse-a{0%,100%{box-shadow:0 0 0 0 transparent}50%{box-shadow:0 0 0 4px rgba(192,57,43,.12)}}
+.ab-icon{font-size:22px;flex-shrink:0;}
+.ab-title{font-weight:700;font-size:13px;margin-bottom:1px;}
+.alert-banner.clear .ab-title{color:var(--green);}
+.alert-banner.warn .ab-title{color:var(--warn);}
+.alert-banner.danger .ab-title{color:var(--accent);}
+.ab-detail{font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.5;}
 
-/* ── SECTION HEADER ── */
-.sec-hdr {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  color: var(--muted);
-  padding: 14px 20px 6px;
-  border-bottom: 1px solid var(--rule);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+/* SEC LABEL */
+.sec-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;align-items:center;}
 
-/* ── ROUTE PILLS ── */
-.route-pills {
-  display: flex;
-  gap: 8px;
-  padding: 12px 20px;
-  background: var(--bg2);
-  border-bottom: 1px solid var(--rule);
-  overflow-x: auto;
-  flex-shrink: 0;
-}
-.route-pills::-webkit-scrollbar { display: none; }
-.rpill {
-  flex-shrink: 0;
-  font-family: var(--mono);
-  font-size: 11px;
-  padding: 7px 14px;
-  border: 1.5px solid var(--rule);
-  border-radius: 20px;
-  background: var(--bg);
-  color: var(--muted);
-  cursor: pointer;
-  transition: all .15s;
-  white-space: nowrap;
-}
-.rpill.active {
-  background: var(--ink);
-  color: var(--bg);
-  border-color: var(--ink);
-}
+/* TRAFFIC */
+.traffic-section{margin:10px 18px 0;}
+.traffic-cards{display:flex;flex-direction:column;gap:6px;margin-top:6px;}
+.traffic-card{border:1.5px solid var(--rule);border-radius:8px;padding:10px 14px;background:var(--bg);display:flex;align-items:center;gap:10px;}
+.tc-hwy{font-family:var(--display);font-size:22px;color:var(--ink);flex-shrink:0;width:50px;}
+.tc-body{flex:1;}
+.tc-name{font-size:12px;font-weight:700;margin-bottom:1px;}
+.tc-detail{font-family:var(--mono);font-size:9px;color:var(--muted);}
+.tc-right{text-align:right;flex-shrink:0;}
+.tc-speed{font-family:var(--display);font-size:28px;line-height:1;}
+.tc-speed.free{color:var(--green);}
+.tc-speed.slow{color:var(--warn);}
+.tc-speed.jam{color:var(--accent);}
+.tc-unit{font-family:var(--mono);font-size:8px;color:var(--muted);}
+.tc-badge{display:inline-block;font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:10px;border:1px solid;margin-top:3px;}
+.tc-badge.free{border-color:var(--green);color:var(--green);}
+.tc-badge.slow{border-color:var(--warn);color:var(--warn);}
+.tc-badge.jam{border-color:var(--accent);color:var(--accent);}
 
-/* ── ALERT BANNER ── */
-.alert-banner {
-  margin: 12px 20px 0;
-  border-radius: 8px;
-  padding: 12px 16px;
-  border: 1.5px solid;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.alert-banner.clear  { border-color: var(--safe); background: rgba(30,132,73,.06); }
-.alert-banner.warn   { border-color: var(--warn); background: rgba(214,137,16,.06); }
-.alert-banner.danger { border-color: var(--accent); background: rgba(192,57,43,.06); animation: pulse-a 2s ease-in-out infinite; }
-@keyframes pulse-a { 0%,100%{box-shadow:0 0 0 0 transparent} 50%{box-shadow:0 0 0 4px rgba(192,57,43,.1)} }
-.ab-icon { font-size: 24px; flex-shrink: 0; }
-.ab-text { flex: 1; }
-.ab-title { font-weight: 700; font-size: 13px; margin-bottom: 2px; }
-.alert-banner.clear  .ab-title { color: var(--safe); }
-.alert-banner.warn   .ab-title { color: var(--warn); }
-.alert-banner.danger .ab-title { color: var(--accent); }
-.ab-detail { font-family: var(--mono); font-size: 10px; color: var(--muted); line-height: 1.5; }
+/* ROUTE INFO */
+.route-info{margin:10px 18px 0;border:1.5px solid var(--rule);border-radius:10px;overflow:hidden;background:var(--bg);}
+.ri-row{display:flex;align-items:center;padding:10px 14px;border-bottom:1px solid var(--rule);gap:10px;}
+.ri-row:last-child{border:none;}
+.ri-icon{font-size:18px;width:22px;text-align:center;flex-shrink:0;}
+.ri-body{flex:1;}
+.ri-label{font-family:var(--mono);font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+.ri-val{font-size:13px;font-weight:700;margin-top:1px;}
+.ri-sub{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:1px;}
+.ri-big{font-family:var(--display);font-size:32px;line-height:1;color:var(--ink);}
+.ri-unit{font-family:var(--mono);font-size:9px;color:var(--muted);}
 
-/* ── ROUTE INFO CARD ── */
-.route-info {
-  margin: 10px 20px 0;
-  border: 1.5px solid var(--rule);
-  border-radius: 8px;
-  overflow: hidden;
-  background: var(--bg);
-}
-.ri-row {
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--rule);
-  gap: 12px;
-}
-.ri-row:last-child { border: none; }
-.ri-icon { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; }
-.ri-body { flex: 1; }
-.ri-label { font-family: var(--mono); font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
-.ri-val { font-size: 15px; font-weight: 700; margin-top: 1px; }
-.ri-sub { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 1px; }
-.ri-right { text-align: right; flex-shrink: 0; }
-.ri-big { font-family: var(--display); font-size: 36px; line-height: 1; color: var(--ink); }
-.ri-unit { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+/* LOCATION CARDS */
+.sec-hdr{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);padding:12px 18px 6px;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;}
+.loc-cards{padding:8px 18px 0;display:flex;flex-direction:column;gap:8px;}
+.loc-card{border:1.5px solid var(--rule);border-radius:10px;overflow:hidden;background:var(--bg);}
+.loc-card.active-route{border-color:var(--ink);box-shadow:3px 3px 0 rgba(0,0,0,.07);}
+.lc-header{display:flex;align-items:center;padding:10px 14px 8px;border-bottom:1px solid var(--rule);gap:8px;background:var(--bg2);}
+.lc-tag{font-family:var(--mono);font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;}
+.lc-name{font-size:15px;font-weight:700;flex:1;}
+.lc-cond{font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:10px;border:1px solid;}
+.lc-cond.good{border-color:var(--green);color:var(--green);}
+.lc-cond.warn{border-color:var(--warn);color:var(--warn);}
+.lc-cond.bad{border-color:var(--accent);color:var(--accent);}
+.lc-body{padding:10px 14px;}
+.lc-main{display:flex;align-items:flex-end;gap:8px;margin-bottom:8px;}
+.lc-icon{font-size:36px;line-height:1;}
+.lc-temp{font-family:var(--display);font-size:52px;line-height:1;color:var(--ink);}
+.lc-tu{font-family:var(--mono);font-size:13px;color:var(--muted);padding-bottom:6px;}
+.lc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;}
+.lc-stat{background:var(--bg2);border-radius:6px;padding:6px 8px;}
+.lc-stat.feels{background:rgba(192,57,43,.07);}
+.lc-stat-lbl{font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;}
+.lc-stat-val{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink);margin-top:1px;}
+.lc-stat.feels .lc-stat-val{color:var(--accent);}
+.lc-stat-unit{font-size:8px;color:var(--muted);}
 
-/* ── LOCATION CARDS ── */
-.loc-cards { padding: 10px 20px 0; display: flex; flex-direction: column; gap: 10px; }
+/* FORECAST */
+.forecast-wrap{padding:8px 18px 0;}
+.forecast-scroll{display:flex;gap:5px;overflow-x:auto;padding-bottom:4px;}
+.forecast-scroll::-webkit-scrollbar{display:none;}
+.fc-cell{flex:0 0 60px;border:1.5px solid var(--rule);border-radius:8px;padding:7px 5px;text-align:center;background:var(--bg);}
+.fc-time{font-family:var(--mono);font-size:8px;color:var(--muted);line-height:1.3;}
+.fc-icon{font-size:18px;margin:3px 0;}
+.fc-temp{font-family:var(--display);font-size:19px;color:var(--ink);line-height:1;}
+.fc-rain{font-family:var(--mono);font-size:8px;color:var(--blue);margin-top:1px;}
 
-.loc-card {
-  border: 1.5px solid var(--rule);
-  border-radius: 10px;
-  overflow: hidden;
-  background: var(--bg);
-  position: relative;
-}
-.loc-card.active-route {
-  border-color: var(--ink);
-  box-shadow: 3px 3px 0 rgba(0,0,0,.08);
-}
-.lc-header {
-  display: flex;
-  align-items: center;
-  padding: 12px 16px 10px;
-  border-bottom: 1px solid var(--rule);
-  gap: 10px;
-  background: var(--bg2);
-}
-.lc-tag { font-family: var(--mono); font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: .15em; }
-.lc-name { font-size: 16px; font-weight: 700; flex: 1; }
-.lc-condition {
-  font-family: var(--mono); font-size: 9px;
-  padding: 2px 7px; border-radius: 10px; border: 1px solid;
-}
-.lc-condition.good { border-color: var(--safe); color: var(--safe); }
-.lc-condition.warn { border-color: var(--warn); color: var(--warn); }
-.lc-condition.bad  { border-color: var(--accent); color: var(--accent); }
+/* TYPHOON */
+.typhoon-card{margin:8px 18px 0;border:1.5px solid var(--accent);border-radius:10px;background:rgba(192,57,43,.04);padding:12px 14px;display:none;}
+.ty-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.ty-icon{font-size:28px;animation:spin 4s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ty-name{font-size:16px;font-weight:700;color:var(--accent);}
+.ty-tag{font-family:var(--mono);font-size:9px;color:var(--muted);}
+.ty-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;}
+.ty-stat{background:var(--bg2);border-radius:6px;padding:7px 8px;}
+.ty-stat-lbl{font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;}
+.ty-stat-val{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--accent);margin-top:1px;}
 
-.lc-body { padding: 12px 16px; }
-.lc-main { display: flex; align-items: flex-end; gap: 10px; margin-bottom: 10px; }
-.lc-icon { font-size: 38px; line-height: 1; }
-.lc-temp { font-family: var(--display); font-size: 58px; line-height: 1; color: var(--ink); }
-.lc-temp-unit { font-family: var(--mono); font-size: 14px; color: var(--muted); padding-bottom: 8px; }
-
-.lc-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-.lc-stat {
-  background: var(--bg2);
-  border-radius: 6px;
-  padding: 8px 10px;
-}
-.lc-stat-lbl { font-family: var(--mono); font-size: 8px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
-.lc-stat-val { font-family: var(--mono); font-size: 16px; font-weight: 600; color: var(--ink); margin-top: 2px; }
-.lc-stat-unit { font-size: 9px; color: var(--muted); }
-
-/* ── FORECAST SCROLL ── */
-.forecast-wrap { padding: 10px 20px 0; }
-.forecast-scroll {
-  display: flex;
-  gap: 6px;
-  overflow-x: auto;
-  padding-bottom: 4px;
-}
-.forecast-scroll::-webkit-scrollbar { display: none; }
-.fc-cell {
-  flex: 0 0 64px;
-  border: 1.5px solid var(--rule);
-  border-radius: 8px;
-  padding: 8px 6px;
-  text-align: center;
-  background: var(--bg);
-}
-.fc-time { font-family: var(--mono); font-size: 8px; color: var(--muted); }
-.fc-icon { font-size: 20px; margin: 4px 0; }
-.fc-temp { font-family: var(--display); font-size: 22px; color: var(--ink); line-height: 1; }
-.fc-rain { font-family: var(--mono); font-size: 9px; color: var(--blue); margin-top: 2px; }
-
-/* ── TYPHOON CARD ── */
-.typhoon-card {
-  margin: 10px 20px 0;
-  border: 1.5px solid var(--accent);
-  border-radius: 10px;
-  background: rgba(192,57,43,.04);
-  padding: 14px 16px;
-  display: none;
-}
-.ty-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.ty-icon { font-size: 32px; animation: spin 4s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.ty-name { font-size: 18px; font-weight: 700; color: var(--accent); }
-.ty-tag { font-family: var(--mono); font-size: 9px; color: var(--muted); }
-.ty-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-.ty-stat { background: var(--bg2); border-radius: 6px; padding: 8px 10px; }
-.ty-stat-lbl { font-family: var(--mono); font-size: 8px; color: var(--muted); text-transform: uppercase; }
-.ty-stat-val { font-family: var(--mono); font-size: 15px; font-weight: 600; color: var(--accent); margin-top: 2px; }
-
-/* ── BOTTOM ACTION BAR ── */
-.bottom-bar {
-  position: fixed;
-  bottom: 0; left: 50%; transform: translateX(-50%);
-  width: 100%; max-width: 430px;
-  background: var(--ink);
-  padding: 12px 20px calc(var(--safe-bot) + 12px);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  z-index: 200;
-  border-top: none;
-}
-.api-input-mob {
-  flex: 1;
-  background: rgba(245,240,232,.1);
-  border: 1px solid rgba(245,240,232,.2);
-  border-radius: 8px;
-  padding: 10px 14px;
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--bg);
-  outline: none;
-  min-width: 0;
-}
-.api-input-mob::placeholder { color: rgba(245,240,232,.3); }
-.api-input-mob:focus { border-color: rgba(245,240,232,.5); }
-.btn-update {
-  background: var(--accent);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 18px;
-  font-family: var(--mono);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-  flex-shrink: 0;
-  transition: opacity .15s;
-  letter-spacing: .05em;
-}
-.btn-update:disabled { opacity: .4; }
-.btn-update:active { opacity: .7; }
-
-/* ── STATUS PIP ── */
-.status-row {
-  padding: 6px 20px 0;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.s-pip { width: 6px; height: 6px; border-radius: 50%; background: var(--rule); flex-shrink: 0; }
-.s-pip.ok { background: var(--safe); }
-.s-pip.loading { background: var(--warn); animation: blink .8s step-end infinite; }
-.s-pip.error { background: var(--accent); }
-.s-txt { font-family: var(--mono); font-size: 9px; color: var(--muted); }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
-
-/* ── SKELETON / PLACEHOLDER ── */
-.placeholder {
-  height: 16px; border-radius: 4px;
-  background: linear-gradient(90deg, var(--rule) 25%, var(--bg2) 50%, var(--rule) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+/* BOTTOM BAR */
+.bottom-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--ink);padding:10px 18px calc(var(--safe-bot)+10px);display:flex;align-items:center;gap:8px;z-index:200;}
+.status-left{flex:1;display:flex;align-items:center;gap:6px;min-width:0;}
+.s-pip{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.2);flex-shrink:0;}
+.s-pip.ok{background:var(--green);}
+.s-pip.loading{background:var(--warn);animation:blink .8s step-end infinite;}
+.s-pip.error{background:var(--accent);}
+.s-txt{font-family:var(--mono);font-size:9px;color:rgba(245,240,232,.45);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.btn-update{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:9px 16px;font-family:var(--mono);font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:opacity .15s;}
+.btn-update:disabled{opacity:.4;}
+.btn-update:active{opacity:.7;}
 </style>
 </head>
 <body>
 <div class="shell">
 
-  <!-- TOP BAR -->
   <div class="topbar">
+    <div><div class="topbar-title">通勤</div></div>
     <div>
-      <div class="topbar-title">通勤</div>
-    </div>
-    <div class="topbar-right">
       <div class="topbar-clock" id="clock">--:--</div>
-      <div class="topbar-date" id="dateStr">----/--/--</div>
+      <div class="topbar-date" id="dateStr">----</div>
     </div>
   </div>
 
-  <!-- ROUTE PILLS -->
+  <div class="sun-bar">
+    <div class="sun-item">🌅 <span class="sun-val" id="sunrise">--:--</span></div>
+    <div class="sun-track">
+      <div class="sun-fill" id="sunFill" style="width:0%"></div>
+      <div class="sun-dot" id="sunDot" style="left:0%"></div>
+    </div>
+    <div class="sun-item">🌇 <span class="sun-val" id="sunset">--:--</span></div>
+  </div>
+
   <div class="route-pills">
     <div class="rpill active" id="pill-ws" onclick="setRoute('ws')">🏠→🏢 五股›樹林</div>
     <div class="rpill" id="pill-sh" onclick="setRoute('sh')">🏢→🏠 樹林›新竹</div>
     <div class="rpill" id="pill-wh" onclick="setRoute('wh')">🏠→🏠 五股›新竹</div>
   </div>
 
-  <!-- SCROLL AREA -->
   <div class="scroll-area">
 
-    <!-- status -->
-    <div class="status-row">
-      <div class="s-pip" id="sPip"></div>
-      <div class="s-txt" id="sText">請輸入 API Key 並點更新</div>
-    </div>
-
-    <!-- alert banner -->
     <div class="alert-banner clear" id="alertBanner">
       <div class="ab-icon">✅</div>
-      <div class="ab-text">
-        <div class="ab-title" id="abTitle">等待資料</div>
-        <div class="ab-detail" id="abDetail">更新後顯示行車建議</div>
+      <div>
+        <div class="ab-title" id="abTitle">載入中...</div>
+        <div class="ab-detail" id="abDetail">正在取得即時資料</div>
       </div>
     </div>
 
-    <!-- route info -->
-    <div class="route-info" id="routeInfo">
+    <!-- TRAFFIC -->
+    <div class="traffic-section">
+      <div class="sec-label">
+        <span>🛣️ 國道即時路況</span>
+        <span id="traffic-time" style="font-size:8px;"></span>
+      </div>
+      <div class="traffic-cards" id="trafficCards">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--muted);padding:6px 0;">取得中...</div>
+      </div>
+    </div>
+
+    <!-- ROUTE INFO -->
+    <div class="route-info" style="margin-top:10px;">
       <div class="ri-row">
         <div class="ri-icon">🛣️</div>
-        <div class="ri-body">
-          <div class="ri-label">路線</div>
-          <div class="ri-val" id="ri-hwy">台65 › 國三</div>
-        </div>
+        <div class="ri-body"><div class="ri-label">路線</div><div class="ri-val" id="ri-hwy">台65 › 國三</div></div>
       </div>
       <div class="ri-row">
         <div class="ri-icon">📍</div>
-        <div class="ri-body">
-          <div class="ri-label">距離</div>
-          <div class="ri-sub" id="ri-from-to">五股 → 樹林</div>
-        </div>
-        <div class="ri-right">
+        <div class="ri-body"><div class="ri-label">區間</div><div class="ri-sub" id="ri-label">五股 → 樹林</div></div>
+        <div style="text-align:right;flex-shrink:0;">
           <div class="ri-big" id="ri-dist">25</div>
           <div class="ri-unit">公里</div>
         </div>
       </div>
       <div class="ri-row">
         <div class="ri-icon">⏱️</div>
-        <div class="ri-body">
-          <div class="ri-label">預估時間（平日）</div>
-          <div class="ri-sub" id="ri-time-note">不含尖峰塞車</div>
-        </div>
-        <div class="ri-right">
+        <div class="ri-body"><div class="ri-label">預估時間</div><div class="ri-sub">平日一般狀況</div></div>
+        <div style="text-align:right;flex-shrink:0;">
           <div class="ri-big" id="ri-mins">30</div>
           <div class="ri-unit">分鐘</div>
         </div>
       </div>
     </div>
 
-    <!-- typhoon card -->
+    <!-- TYPHOON -->
     <div class="typhoon-card" id="typhoonCard">
       <div class="ty-header">
         <div class="ty-icon">🌀</div>
-        <div>
-          <div class="ty-name" id="ty-name">颱風</div>
-          <div class="ty-tag" id="ty-tag">中度颱風</div>
-        </div>
+        <div><div class="ty-name" id="ty-name">颱風</div><div class="ty-tag" id="ty-tag"></div></div>
       </div>
       <div class="ty-grid">
-        <div class="ty-stat"><div class="ty-stat-lbl">最大風速</div><div class="ty-stat-val" id="ty-wind">-- m/s</div></div>
-        <div class="ty-stat"><div class="ty-stat-lbl">氣壓</div><div class="ty-stat-val" id="ty-pres">-- hPa</div></div>
-        <div class="ty-stat"><div class="ty-stat-lbl">暴風半徑</div><div class="ty-stat-val" id="ty-r">-- km</div></div>
+        <div class="ty-stat"><div class="ty-stat-lbl">最大風速</div><div class="ty-stat-val" id="ty-wind">--</div></div>
+        <div class="ty-stat"><div class="ty-stat-lbl">氣壓</div><div class="ty-stat-val" id="ty-pres">--</div></div>
+        <div class="ty-stat"><div class="ty-stat-lbl">暴風半徑</div><div class="ty-stat-val" id="ty-r">--</div></div>
       </div>
     </div>
 
-    <!-- location cards -->
-    <div class="sec-hdr" style="margin-top:14px;">
-      <span>即時天氣</span>
-      <span id="obs-time" style="font-size:8px;"></span>
-    </div>
+    <!-- WEATHER -->
+    <div class="sec-hdr"><span>即時天氣</span><span id="obs-time" style="font-size:8px;"></span></div>
     <div class="loc-cards">
-      <!-- Wugu -->
+      <!-- 五股 -->
       <div class="loc-card active-route" id="lc-wugu">
         <div class="lc-header">
-          <div>
-            <div class="lc-tag">家 · 五股</div>
-            <div class="lc-name">五股的家</div>
-          </div>
-          <div class="lc-condition good" id="lcond-wugu">—</div>
+          <div><div class="lc-tag">家 · 五股</div><div class="lc-name">五股的家</div></div>
+          <div class="lc-cond good" id="lcond-wugu">—</div>
         </div>
         <div class="lc-body">
           <div class="lc-main">
-            <div class="lc-icon" id="licon-wugu">—</div>
-            <div class="lc-temp" id="ltemp-wugu">--</div>
-            <div class="lc-temp-unit">°C</div>
+            <div id="licon-wugu" class="lc-icon">—</div>
+            <div id="ltemp-wugu" class="lc-temp">--</div>
+            <div class="lc-tu">°C</div>
           </div>
           <div class="lc-grid">
-            <div class="lc-stat"><div class="lc-stat-lbl">風速</div><div class="lc-stat-val" id="lwind-wugu">--<span class="lc-stat-unit"> m/s</span></div></div>
-            <div class="lc-stat"><div class="lc-stat-lbl">雨量</div><div class="lc-stat-val" id="lrain-wugu">--<span class="lc-stat-unit"> mm</span></div></div>
-            <div class="lc-stat"><div class="lc-stat-lbl">濕度</div><div class="lc-stat-val" id="lhum-wugu">--<span class="lc-stat-unit"> %</span></div></div>
+            <div class="lc-stat feels"><div class="lc-stat-lbl">體感</div><div class="lc-stat-val" id="lfl-wugu">--<span class="lc-stat-unit">°</span></div></div>
+            <div class="lc-stat"><div class="lc-stat-lbl">風速</div><div class="lc-stat-val" id="lwind-wugu">--<span class="lc-stat-unit">m/s</span></div></div>
+            <div class="lc-stat"><div class="lc-stat-lbl">雨量</div><div class="lc-stat-val" id="lrain-wugu">--<span class="lc-stat-unit">mm</span></div></div>
+            <div class="lc-stat"><div class="lc-stat-lbl">濕度</div><div class="lc-stat-val" id="lhum-wugu">--<span class="lc-stat-unit">%</span></div></div>
           </div>
         </div>
       </div>
-
-      <!-- Shulin -->
+      <!-- 樹林 -->
       <div class="loc-card" id="lc-shulin">
         <div class="lc-header">
-          <div>
-            <div class="lc-tag">公司 · 樹林</div>
-            <div class="lc-name">公司</div>
-          </div>
-          <div class="lc-condition good" id="lcond-shulin">—</div>
+          <div><div class="lc-tag">公司 · 樹林</div><div class="lc-name">公司</div></div>
+          <div class="lc-cond good" id="lcond-shulin">—</div>
         </div>
         <div class="lc-body">
           <div class="lc-main">
-            <div class="lc-icon" id="licon-shulin">—</div>
-            <div class="lc-temp" id="ltemp-shulin">--</div>
-            <div class="lc-temp-unit">°C</div>
+            <div id="licon-shulin" class="lc-icon">—</div>
+            <div id="ltemp-shulin" class="lc-temp">--</div>
+            <div class="lc-tu">°C</div>
           </div>
           <div class="lc-grid">
-            <div class="lc-stat"><div class="lc-stat-lbl">風速</div><div class="lc-stat-val" id="lwind-shulin">--<span class="lc-stat-unit"> m/s</span></div></div>
-            <div class="lc-stat"><div class="lc-stat-lbl">雨量</div><div class="lc-stat-val" id="lrain-shulin">--<span class="lc-stat-unit"> mm</span></div></div>
-            <div class="lc-stat"><div class="lc-stat-lbl">濕度</div><div class="lc-stat-val" id="lhum-shulin">--<span class="lc-stat-unit"> %</span></div></div>
+            <div class="lc-stat feels"><div class="lc-stat-lbl">體感</div><div class="lc-stat-val" id="lfl-shulin">--<span class="lc-stat-unit">°</span></div></div>
+            <div class="lc-stat"><div class="lc-stat-lbl">風速</div><div class="lc-stat-val" id="lwind-shulin">--<span class="lc-stat-unit">m/s</span></div></div>
+            <div class="lc-stat"><div class="lc-stat-lbl">雨量</div><div class="lc-stat-val" id="lrain-shulin">--<span class="lc-stat-unit">mm</span></div></div>
+            <div class="lc-stat"><div class="lc-stat-lbl">濕度</div><div class="lc-stat-val" id="lhum-shulin">--<span class="lc-stat-unit">%</span></div></div>
           </div>
         </div>
       </div>
-
-      <!-- Hsinchu -->
+      <!-- 新竹 -->
       <div class="loc-card" id="lc-hsinchu">
         <div class="lc-header">
-          <div>
-            <div class="lc-tag">家 · 新竹</div>
-            <div class="lc-name">新竹的家</div>
-          </div>
-          <div class="lc-condition good" id="lcond-hsinchu">—</div>
+          <div><div class="lc-tag">家 · 新竹</div><div class="lc-name">新竹的家</div></div>
+          <div class="lc-cond good" id="lcond-hsinchu">—</div>
         </div>
         <div class="lc-body">
           <div class="lc-main">
-            <div class="lc-icon" id="licon-hsinchu">—</div>
-            <div class="lc-temp" id="ltemp-hsinchu">--</div>
-            <div class="lc-temp-unit">°C</div>
+            <div id="licon-hsinchu" class="lc-icon">—</div>
+            <div id="ltemp-hsinchu" class="lc-temp">--</div>
+            <div class="lc-tu">°C</div>
           </div>
           <div class="lc-grid">
-            <div class="lc-stat"><div class="lc-stat-lbl">風速</div><div class="lc-stat-val" id="lwind-hsinchu">--<span class="lc-stat-unit"> m/s</span></div></div>
-            <div class="lc-stat"><div class="lc-stat-lbl">雨量</div><div class="lc-stat-val" id="lrain-hsinchu">--<span class="lc-stat-unit"> mm</span></div></div>
-            <div class="lc-stat"><div class="lc-stat-lbl">濕度</div><div class="lc-stat-val" id="lhum-hsinchu">--<span class="lc-stat-unit"> %</span></div></div>
+            <div class="lc-stat feels"><div class="lc-stat-lbl">體感</div><div class="lc-stat-val" id="lfl-hsinchu">--<span class="lc-stat-unit">°</span></div></div>
+            <div class="lc-stat"><div class="lc-stat-lbl">風速</div><div class="lc-stat-val" id="lwind-hsinchu">--<span class="lc-stat-unit">m/s</span></div></div>
+            <div class="lc-stat"><div class="lc-stat-lbl">雨量</div><div class="lc-stat-val" id="lrain-hsinchu">--<span class="lc-stat-unit">mm</span></div></div>
+            <div class="lc-stat"><div class="lc-stat-lbl">濕度</div><div class="lc-stat-val" id="lhum-hsinchu">--<span class="lc-stat-unit">%</span></div></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- forecast -->
-    <div class="sec-hdr" style="margin-top:14px;"><span>天氣預報</span></div>
+    <!-- FORECAST -->
+    <div class="sec-hdr" style="margin-top:12px;"><span>天氣預報</span></div>
     <div class="forecast-wrap">
       <div class="forecast-scroll" id="forecastScroll">
         <div style="font-family:var(--mono);font-size:10px;color:var(--muted);padding:8px 0;">更新後顯示</div>
       </div>
     </div>
 
-  </div><!-- end scroll-area -->
+  </div>
 
-  <!-- BOTTOM BAR -->
   <div class="bottom-bar">
-    <input class="api-input-mob" type="hidden" id="apiKey" value="CWA-49B1E2AB-7006-41AC-A428-D9AA6BD3EC6E" />
+    <div class="status-left">
+      <div class="s-pip" id="sPip"></div>
+      <div class="s-txt" id="sText">點更新載入資料</div>
+    </div>
     <button class="btn-update" id="btnUpdate" onclick="fetchAll()">🔄 更新</button>
   </div>
 
-</div><!-- end shell -->
+</div>
 
 <script>
-// ── DATA ──
-const ROUTES_DEF = {
-  ws: { label:'五股 → 樹林', hwy:'台65 › 國三',       from:'wugu',   to:'shulin',  dist:25,  mins:30 },
-  sh: { label:'樹林 → 新竹', hwy:'國三 › 台68',       from:'shulin', to:'hsinchu', dist:82,  mins:75 },
-  wh: { label:'五股 → 新竹', hwy:'台65 › 國三 › 台68', from:'wugu',   to:'hsinchu', dist:103, mins:90 },
-};
-const STATIONS = {
-  wugu:    { name:'五股',  stName:'五股'  },
-  shulin:  { name:'山佳', stName:'山佳'  },
-  hsinchu: { name:'新竹',  stName:'新竹'  },
-};
+const CWA_KEY = 'CWA-49B1E2AB-7006-41AC-A428-D9AA6BD3EC6E';
 
-let currentRoute = 'ws';
-let wx = {};
+const ROUTES = {
+  ws:{label:'五股→樹林', hwy:'台65 › 國三',         from:'wugu',   to:'shulin',  dist:25,  mins:30,  hwys:['65','03']},
+  sh:{label:'樹林→新竹', hwy:'國三 › 台68',          from:'shulin', to:'hsinchu', dist:82,  mins:75,  hwys:['03','68']},
+  wh:{label:'五股→新竹', hwy:'台65 › 國三 › 台68',   from:'wugu',   to:'hsinchu', dist:103, mins:90,  hwys:['65','03','68']},
+};
+let currentRoute='ws', wxData={};
 
-// ── CLOCK ──
+// CLOCK
 function tick() {
-  const n = new Date();
-  document.getElementById('clock').textContent =
-    `${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;
-  document.getElementById('dateStr').textContent =
-    `${n.getFullYear()}/${String(n.getMonth()+1).padStart(2,'0')}/${String(n.getDate()).padStart(2,'0')} 週${'日一二三四五六'[n.getDay()]}`;
+  const n=new Date();
+  document.getElementById('clock').textContent=`${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;
+  document.getElementById('dateStr').textContent=`${n.getFullYear()}/${String(n.getMonth()+1).padStart(2,'0')}/${String(n.getDate()).padStart(2,'0')} 週${'日一二三四五六'[n.getDay()]}`;
+  updateSun();
 }
-setInterval(tick, 1000); tick();
+setInterval(tick,1000); tick();
 
-// ── ROUTE ──
+// SUNRISE/SUNSET
+function calcSun(date) {
+  const lat=24.9*Math.PI/180, lng=121.2, tz=8;
+  const d=Math.floor((date-new Date(date.getFullYear(),0,0))/86400000);
+  const B=(360/365)*(d-81)*Math.PI/180;
+  const EqT=9.87*Math.sin(2*B)-7.53*Math.cos(B)-1.5*Math.sin(B);
+  const decl=Math.asin(Math.sin(23.45*Math.PI/180)*Math.sin(B));
+  const HA=Math.acos(-Math.tan(lat)*Math.tan(decl));
+  const noon=12-(lng-tz*15)/15-EqT/60;
+  return {rise:Math.round((noon-HA*180/Math.PI/15)*60), set:Math.round((noon+HA*180/Math.PI/15)*60)};
+}
+function minsToTime(m){return `${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;}
+function updateSun() {
+  const n=new Date(), sun=calcSun(n);
+  document.getElementById('sunrise').textContent=minsToTime(sun.rise);
+  document.getElementById('sunset').textContent=minsToTime(sun.set);
+  const pct=Math.max(0,Math.min(100,(n.getHours()*60+n.getMinutes()-sun.rise)/(sun.set-sun.rise)*100));
+  document.getElementById('sunFill').style.width=pct+'%';
+  document.getElementById('sunDot').style.left=pct+'%';
+}
+
+// ROUTE
 function setRoute(key) {
-  currentRoute = key;
-  document.querySelectorAll('.rpill').forEach(p => p.classList.remove('active'));
+  currentRoute=key;
+  document.querySelectorAll('.rpill').forEach(p=>p.classList.remove('active'));
   document.getElementById('pill-'+key).classList.add('active');
-  const r = ROUTES_DEF[key];
-  document.getElementById('ri-hwy').textContent    = r.hwy;
-  document.getElementById('ri-from-to').textContent = r.label;
-  document.getElementById('ri-dist').textContent   = r.dist;
-  document.getElementById('ri-mins').textContent   = r.mins;
-  highlightCards(r.from, r.to);
-  if (Object.keys(wx).length) updateAlert(wx, key);
+  const r=ROUTES[key];
+  document.getElementById('ri-hwy').textContent=r.hwy;
+  document.getElementById('ri-label').textContent=r.label;
+  document.getElementById('ri-dist').textContent=r.dist;
+  document.getElementById('ri-mins').textContent=r.mins;
+  highlight(r.from,r.to);
+  if(Object.keys(wxData).length) updateAlert(wxData,key);
+  renderTrafficForRoute(key);
+}
+function highlight(from,to) {
+  ['wugu','shulin','hsinchu'].forEach(k=>document.getElementById('lc-'+k).classList.toggle('active-route',k===from||k===to));
 }
 
-function highlightCards(from, to) {
-  ['wugu','shulin','hsinchu'].forEach(k => {
-    document.getElementById('lc-'+k).classList.toggle('active-route', k===from || k===to);
-  });
+// FEELS LIKE
+function feelsLike(t,rh,ws) {
+  if(t>=27&&rh>=40){
+    const hi=-8.784+1.611*t+2.338*rh-0.146*t*rh-0.0123*t*t-0.0164*rh*rh+0.00221*t*t*rh+0.000725*t*rh*rh-0.00000358*t*t*rh*rh;
+    return Math.round(hi);
+  }
+  if(t<=10&&ws>1.34){
+    const v=ws*3.6;
+    return Math.round(13.12+0.6215*t-11.37*Math.pow(v,0.16)+0.3965*t*Math.pow(v,0.16));
+  }
+  return Math.round(t);
 }
 
-// ── WEATHER ICON ──
-function wxIcon(desc, rain) {
-  if (rain > 10) return '🌧️';
-  if (rain > 0)  return '🌦️';
-  if (!desc) return '🌤️';
-  if (desc.includes('雷')) return '⛈️';
-  if (desc.includes('雨')) return rain > 0 ? '🌧️' : '🌦️';
-  if (desc.includes('陰')) return '☁️';
-  if (desc.includes('多雲')) return '⛅';
+// WEATHER ICON
+function wxIcon(desc,rain){
+  if(rain>10) return '🌧️';
+  if(rain>0)  return '🌦️';
+  if(!desc) return '🌤️';
+  if(desc.includes('雷')) return '⛈️';
+  if(desc.includes('雨')) return '🌧️';
+  if(desc.includes('陰')) return '☁️';
+  if(desc.includes('多雲')) return '⛅';
   return '☀️';
 }
-
-function condClass(wind, rain) {
-  if (wind >= 20 || rain > 20) return ['bad',  '⚠ 注意'];
-  if (wind >= 10 || rain > 5)  return ['warn', '⚡ 留意'];
-  return ['good', '✓ 良好'];
+function condClass(wind,rain){
+  if(wind>=20||rain>20) return ['bad','⚠ 注意'];
+  if(wind>=10||rain>5)  return ['warn','⚡ 留意'];
+  return ['good','✓ 良好'];
 }
 
-// ── UPDATE CARDS ──
+// UPDATE WEATHER CARDS
 function updateCards(data) {
-  const now = new Date();
-  document.getElementById('obs-time').textContent =
-    `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')} 更新`;
-
-  ['wugu','shulin','hsinchu'].forEach(k => {
-    const d = data[k] || {};
-    const wind = parseFloat(d.wind) || 0;
-    const rain = parseFloat(d.rain) || 0;
-    const temp = d.temp ?? '--';
-    const [cls, lbl] = condClass(wind, rain);
-
-    document.getElementById('licon-'+k).textContent   = wxIcon(d.wx, rain);
-    document.getElementById('ltemp-'+k).textContent   = temp;
-    document.getElementById('lwind-'+k).innerHTML     = `${wind}<span class="lc-stat-unit"> m/s</span>`;
-    document.getElementById('lrain-'+k).innerHTML     = `${rain}<span class="lc-stat-unit"> mm</span>`;
-    document.getElementById('lhum-'+k).innerHTML      = `${d.humidity??'--'}<span class="lc-stat-unit"> %</span>`;
-    const cEl = document.getElementById('lcond-'+k);
-    cEl.textContent  = lbl;
-    cEl.className    = 'lc-condition ' + cls;
+  document.getElementById('obs-time').textContent=new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'})+' 更新';
+  ['wugu','shulin','hsinchu'].forEach(k=>{
+    const d=data[k]||{};
+    const wind=parseFloat(d.wind)||0, rain=parseFloat(d.rain)||0;
+    const temp=parseFloat(d.temp)||0, hum=parseFloat(d.humidity)||0;
+    const fl=feelsLike(temp,hum,wind);
+    const [cls,lbl]=condClass(wind,rain);
+    document.getElementById('licon-'+k).textContent=wxIcon(d.wx,rain);
+    document.getElementById('ltemp-'+k).textContent=isNaN(temp)?'--':Math.round(temp);
+    document.getElementById('lfl-'+k).innerHTML=`${fl}<span class="lc-stat-unit">°</span>`;
+    document.getElementById('lwind-'+k).innerHTML=`${wind}<span class="lc-stat-unit">m/s</span>`;
+    document.getElementById('lrain-'+k).innerHTML=`${rain}<span class="lc-stat-unit">mm</span>`;
+    document.getElementById('lhum-'+k).innerHTML=`${hum||'--'}<span class="lc-stat-unit">%</span>`;
+    const c=document.getElementById('lcond-'+k);
+    c.textContent=lbl; c.className='lc-cond '+cls;
   });
 }
 
-// ── UPDATE ALERT ──
-function updateAlert(data, routeKey) {
-  const r = ROUTES_DEF[routeKey];
-  const from = data[r.from] || {};
-  const to   = data[r.to]   || {};
-  const maxW = Math.max(parseFloat(from.wind)||0, parseFloat(to.wind)||0);
-  const maxR = Math.max(parseFloat(from.rain)||0, parseFloat(to.rain)||0);
+// ALERT
+function updateAlert(data,key) {
+  const r=ROUTES[key];
+  const from=data[r.from]||{}, to=data[r.to]||{};
+  const maxW=Math.max(parseFloat(from.wind)||0,parseFloat(to.wind)||0);
+  const maxR=Math.max(parseFloat(from.rain)||0,parseFloat(to.rain)||0);
+  const banner=document.getElementById('alertBanner');
+  let alerts=[];
+  if(maxW>=20) alerts.push(`強風 ${maxW.toFixed(0)} m/s`);
+  if(maxR>20)  alerts.push(`大雨 ${maxR} mm`);
+  else if(maxR>0) alerts.push(`小雨 ${maxR} mm，記得雨刷`);
+  if(document.querySelector('.tc-badge.jam')) alerts.push('路段壅塞');
 
-  const banner = document.getElementById('alertBanner');
-  const title  = document.getElementById('abTitle');
-  const detail = document.getElementById('abDetail');
-  const icon   = banner.querySelector('.ab-icon');
-
-  let alerts = [];
-  if (maxW >= 20) alerts.push(`強風 ${maxW.toFixed(0)} m/s，高速公路注意`);
-  if (maxR > 20)  alerts.push(`大雨 ${maxR} mm，路面濕滑`);
-  else if (maxR > 0) alerts.push(`小雨 ${maxR} mm，記得開雨刷`);
-
-  if (alerts.length === 0) {
-    banner.className = 'alert-banner clear';
-    icon.textContent = '✅';
-    title.textContent = '天氣良好，適合出發';
-    detail.textContent = r.label + '・沿途天氣正常';
-  } else if (maxW >= 20 || maxR > 20) {
-    banner.className = 'alert-banner danger';
-    icon.textContent = '⚠️';
-    title.textContent = '行車需特別注意';
-    detail.innerHTML = alerts.join('<br>');
+  const icon=banner.querySelector('.ab-icon');
+  const title=document.getElementById('abTitle');
+  const detail=document.getElementById('abDetail');
+  if(!alerts.length){
+    banner.className='alert-banner clear'; icon.textContent='✅';
+    title.textContent='天氣路況良好，適合出發'; detail.textContent=r.label+'・無明顯異常';
+  } else if(maxW>=20||maxR>20){
+    banner.className='alert-banner danger'; icon.textContent='⚠️';
+    title.textContent='行車需特別注意'; detail.innerHTML=alerts.join('・');
   } else {
-    banner.className = 'alert-banner warn';
-    icon.textContent = '🌦️';
-    title.textContent = '留意沿途天氣';
-    detail.innerHTML = alerts.join('<br>');
+    banner.className='alert-banner warn'; icon.textContent='🌦️';
+    title.textContent='留意沿途狀況'; detail.innerHTML=alerts.join('・');
   }
 }
 
-// ── FORECAST ──
-function updateForecast(items) {
-  const el = document.getElementById('forecastScroll');
-  if (!items || items.length === 0) return;
-  el.innerHTML = items.slice(0,18).map(f => {
-    const dt = new Date(f.time);
-    const hh = `${dt.getMonth()+1}/${dt.getDate()}<br>${String(dt.getHours()).padStart(2,'0')}時`;
+// TRAFFIC DATA (stored globally)
+let trafficData={};
+
+function speedInfo(speed){
+  if(!speed||speed<=0) return {cls:'',label:'無資料'};
+  if(speed>=80) return {cls:'free',label:'順暢'};
+  if(speed>=40) return {cls:'slow',label:'緩慢'};
+  return {cls:'jam',label:'壅塞'};
+}
+
+function renderTrafficForRoute(key){
+  const r=ROUTES[key];
+  const hwys=[
+    {code:'65',name:'台65',desc:'五股→中和'},
+    {code:'03',name:'國三',desc:'中和↔竹林'},
+    {code:'68',name:'台68',desc:'竹林→新竹市'},
+  ].filter(h=>r.hwys.includes(h.code));
+
+  const el=document.getElementById('trafficCards');
+  el.innerHTML=hwys.map(h=>{
+    const d=trafficData[h.code]||{};
+    const speed=d.speed||null;
+    const info=speedInfo(speed);
+    const speedStr=speed?Math.round(speed):'--';
+    return `<div class="traffic-card">
+      <div class="tc-hwy">${h.name}</div>
+      <div class="tc-body">
+        <div class="tc-name">${h.desc}</div>
+        <div class="tc-detail">${speed?'平均速度':'點擊查看 1968'}</div>
+      </div>
+      <div class="tc-right" ${!speed?'onclick="window.open(\'https://1968.freeway.gov.tw/\',\'_blank\')" style="cursor:pointer;"':''}>
+        <div class="tc-speed ${info.cls}">${speedStr}</div>
+        <div class="tc-unit">${speed?'km/h':'🔗'}</div>
+        ${info.cls?`<div class="tc-badge ${info.cls}">${info.label}</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function fetchTraffic(){
+  try {
+    const res=await fetch('https://tisvcloud.freeway.gov.tw/roadlevel.php?type=2');
+    const text=await res.text();
+    const xml=new DOMParser().parseFromString(text,'text/xml');
+    const items=xml.querySelectorAll('Info');
+    const speeds={'65':[],'03':[],'68':[]};
+    items.forEach(item=>{
+      const road=item.getAttribute('RoadID')||'';
+      const speed=parseFloat(item.getAttribute('AverageSpeed'))||0;
+      if(speed<=0) return;
+      if(road.includes('65'))speeds['65'].push(speed);
+      else if(road.includes('3K')||road.match(/N3|S3|03/))speeds['03'].push(speed);
+      else if(road.includes('68'))speeds['68'].push(speed);
+    });
+    Object.entries(speeds).forEach(([k,arr])=>{
+      if(arr.length) trafficData[k]={speed:arr.reduce((a,b)=>a+b,0)/arr.length};
+    });
+    document.getElementById('traffic-time').textContent=new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'})+' 更新';
+  } catch(e){ console.warn('traffic fetch failed'); }
+  renderTrafficForRoute(currentRoute);
+}
+
+// FORECAST
+function updateForecast(items){
+  const el=document.getElementById('forecastScroll');
+  if(!items||!items.length) return;
+  el.innerHTML=items.slice(0,18).map(f=>{
+    const dt=new Date(f.time);
+    const label=`${dt.getMonth()+1}/${dt.getDate()}<br>${String(dt.getHours()).padStart(2,'0')}時`;
     return `<div class="fc-cell">
-      <div class="fc-time">${hh}</div>
-      <div class="fc-icon">${wxIcon(f.wx, f.rain||0)}</div>
+      <div class="fc-time">${label}</div>
+      <div class="fc-icon">${wxIcon(f.wx,0)}</div>
       <div class="fc-temp">${f.temp??'--'}</div>
       <div class="fc-rain">☔${f.pop??'--'}%</div>
     </div>`;
   }).join('');
 }
 
-// ── STATUS ──
-function setStatus(type, msg) {
-  document.getElementById('sPip').className = 's-pip ' + type;
-  document.getElementById('sText').textContent = msg;
+// STATUS
+function setStatus(type,msg){
+  document.getElementById('sPip').className='s-pip '+type;
+  document.getElementById('sText').textContent=msg;
 }
 
-// ── MAIN FETCH ──
-async function fetchAll() {
-  const key = ("CWA-49B1E2AB-7006-41AC-A428-D9AA6BD3EC6E");
-  if (!key) { alert('請輸入氣象署 API Key'); return; }
-  
-
-  const btn = document.getElementById('btnUpdate');
-  btn.disabled = true; btn.textContent = '⏳';
-  setStatus('loading', '連線中...');
-
+// MAIN FETCH
+async function fetchAll(){
+  const btn=document.getElementById('btnUpdate');
+  btn.disabled=true; btn.textContent='⏳';
+  setStatus('loading','連線中...');
   try {
-    // 1. 三站觀測
-    const stList = [
-      { key:'wugu',    name:'五股'  },
-      { key:'shulin',  name:'山佳'  },
-      { key:'hsinchu', name:'新竹'  },
-    ];
-    const data = {};
-    for (const st of stList) {
-      try {
-        const url = `https://opendata.cwa.gov.tw/api/v1/rest/datastore/O-A0001-001?Authorization=${key}&format=JSON&StationName=${encodeURIComponent(st.name)}`;
-        const res = await fetch(url);
-        const json = await res.json();
-        if (json.success !== 'true' && json.success !== true) throw new Error('auth');
-        const s = json?.records?.Station?.[0];
-        if (s) {
-          const we = s.WeatherElement || {};
-          data[st.key] = {
-            temp:     parseFloat(we.AirTemperature) || '--',
-            wind:     parseFloat(we.WindSpeed) || 0,
-            rain:     parseFloat(we.Now?.Precipitation) || 0,
-            humidity: parseFloat(we.RelativeHumidity) || '--',
-            wx:       we.Weather || '',
-          };
-        }
-      } catch(e) { data[st.key] = {}; }
+    // 1. Weather
+    setStatus('loading','取得氣象資料...');
+    const stations=[{key:'wugu',name:'五股'},{key:'shulin',name:'山佳'},{key:'hsinchu',name:'新竹'}];
+    const data={};
+    for(const st of stations){
+      try{
+        const res=await fetch(`https://opendata.cwa.gov.tw/api/v1/rest/datastore/O-A0001-001?Authorization=${CWA_KEY}&format=JSON&StationName=${encodeURIComponent(st.name)}`);
+        const json=await res.json();
+        if(json.success!=='true'&&json.success!==true) throw new Error('auth');
+        const s=json?.records?.Station?.[0];
+        if(s){const we=s.WeatherElement||{};data[st.key]={temp:parseFloat(we.AirTemperature)||0,wind:parseFloat(we.WindSpeed)||0,rain:parseFloat(we.Now?.Precipitation)||0,humidity:parseFloat(we.RelativeHumidity)||0,wx:we.Weather||''};}
+      }catch(e){data[st.key]={};}
     }
-    wx = data;
+    wxData=data;
     updateCards(data);
-    updateAlert(data, currentRoute);
-    highlightCards(ROUTES_DEF[currentRoute].from, ROUTES_DEF[currentRoute].to);
 
-    // 2. 預報
-    setStatus('loading', '拉取預報...');
-    try {
-      // 鄉鎮預報 F-D0047-069
-      const url = `https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-D0047-069?Authorization=${key}&format=JSON&locationName=新竹市`;
-      const res = await fetch(url);
-      const json = await res.json();
-      const locs = json?.records?.Locations?.[0]?.Location || [];
-      const loc = locs.find(l => l.LocationName?.includes('東區')) || locs[0];
-      if (loc) {
-        const tmpEl = loc.WeatherElement?.find(e => e.ElementName === '溫度');
-        const wxEl  = loc.WeatherElement?.find(e => e.ElementName === '天氣現象');
-        const popEl = loc.WeatherElement?.find(e => e.ElementName === '12小時降雨機率');
-        const times = tmpEl?.Time || [];
-        const items = times.slice(0,18).map((t,i) => ({
-          time: t.DataTime,
-          temp: parseInt(t.ElementValue?.[0]?.Value) || null,
-          wx:   wxEl?.Time?.[i]?.ElementValue?.[0]?.Value || '',
-          pop:  popEl?.Time?.[Math.floor(i/2)]?.ElementValue?.[0]?.Value || null,
-          rain: 0,
-        }));
+    // 2. Traffic
+    setStatus('loading','取得路況...');
+    await fetchTraffic();
+    updateAlert(data,currentRoute);
+    highlight(ROUTES[currentRoute].from,ROUTES[currentRoute].to);
+
+    // 3. Forecast
+    setStatus('loading','取得預報...');
+    try{
+      const res=await fetch(`https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-D0047-069?Authorization=${CWA_KEY}&format=JSON&locationName=新竹市`);
+      const json=await res.json();
+      const locs=json?.records?.Locations?.[0]?.Location||[];
+      const loc=locs.find(l=>l.LocationName?.includes('東區'))||locs[0];
+      if(loc){
+        const tmpEl=loc.WeatherElement?.find(e=>e.ElementName==='溫度');
+        const wxEl=loc.WeatherElement?.find(e=>e.ElementName==='天氣現象');
+        const popEl=loc.WeatherElement?.find(e=>e.ElementName==='12小時降雨機率');
+        const items=(tmpEl?.Time||[]).slice(0,18).map((t,i)=>({time:t.DataTime,temp:parseInt(t.ElementValue?.[0]?.Value)||null,wx:wxEl?.Time?.[i]?.ElementValue?.[0]?.Value||'',pop:popEl?.Time?.[Math.floor(i/2)]?.ElementValue?.[0]?.Value||null}));
         updateForecast(items);
       }
-    } catch(e) { console.warn('forecast', e); }
+    }catch(e){}
 
-    // 3. 颱風
-    setStatus('loading', '查詢颱風...');
-    try {
-      const url = `https://opendata.cwa.gov.tw/api/v1/rest/datastore/W-C0034-005?Authorization=${key}&format=JSON`;
-      const res = await fetch(url);
-      const json = await res.json();
-      const cy = json?.records?.tropicalCyclones?.tropicalCyclone;
-      const card = document.getElementById('typhoonCard');
-      if (cy && cy.length > 0) {
-        const t = cy[0], an = t.Analyses?.Analysis || {};
-        card.style.display = 'block';
-        document.getElementById('ty-name').textContent = `颱風 ${t.TyphoonName || ''}`;
-        document.getElementById('ty-tag').textContent  = t.TyphoonIntensity || '';
-        document.getElementById('ty-wind').textContent = `${parseFloat(an.MaximumWindSpeed)||'--'} m/s`;
-        document.getElementById('ty-pres').textContent = `${parseFloat(an.Pressure)||'--'} hPa`;
-        document.getElementById('ty-r').textContent    = `${parseFloat(an.GaleCircleRadius)||'--'} km`;
-        // Override alert
-        document.getElementById('alertBanner').className = 'alert-banner danger';
-        document.getElementById('alertBanner').querySelector('.ab-icon').textContent = '🌀';
-        document.getElementById('abTitle').textContent = `颱風 ${t.TyphoonName||''} 警報中`;
-        document.getElementById('abDetail').textContent = '請密切注意颱風動態，謹慎評估出行';
+    // 4. Typhoon
+    try{
+      const res=await fetch(`https://opendata.cwa.gov.tw/api/v1/rest/datastore/W-C0034-005?Authorization=${CWA_KEY}&format=JSON`);
+      const json=await res.json();
+      const cy=json?.records?.tropicalCyclones?.tropicalCyclone;
+      const card=document.getElementById('typhoonCard');
+      if(cy&&cy.length>0){
+        const t=cy[0],an=t.Analyses?.Analysis||{};
+        card.style.display='block';
+        document.getElementById('ty-name').textContent=`颱風 ${t.TyphoonName||''}`;
+        document.getElementById('ty-tag').textContent=t.TyphoonIntensity||'';
+        document.getElementById('ty-wind').textContent=`${parseFloat(an.MaximumWindSpeed)||'--'} m/s`;
+        document.getElementById('ty-pres').textContent=`${parseFloat(an.Pressure)||'--'} hPa`;
+        document.getElementById('ty-r').textContent=`${parseFloat(an.GaleCircleRadius)||'--'} km`;
+        const banner=document.getElementById('alertBanner');
+        banner.className='alert-banner danger';
+        banner.querySelector('.ab-icon').textContent='🌀';
+        document.getElementById('abTitle').textContent=`颱風 ${t.TyphoonName||''} 警報中`;
+        document.getElementById('abDetail').textContent='請密切注意颱風動態，謹慎評估出行';
       } else {
-        card.style.display = 'none';
+        card.style.display='none';
       }
-    } catch(e) {}
+    }catch(e){}
 
-    setStatus('ok', `已更新 ${new Date().toLocaleTimeString('zh-TW')}`);
-  } catch(err) {
-    setStatus('error', '✗ ' + err.message);
+    setStatus('ok',`已更新 ${new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'})}`);
+  } catch(err){
+    setStatus('error','✗ '+err.message);
   } finally {
-    btn.disabled = false; btn.textContent = '🔄 更新';
+    btn.disabled=false; btn.textContent='🔄 更新';
   }
 }
 
-// ── INIT ──
+// INIT
 setRoute('ws');
-// Auto-fetch on load
-window.addEventListener('load', () => setTimeout(fetchAll, 500));
+updateSun();
+window.addEventListener('load',()=>setTimeout(fetchAll,600));
 </script>
 </body>
 </html>
